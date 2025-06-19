@@ -13,7 +13,7 @@ public class TaskConsumer implements Runnable {
             try {
                 Task task = TaskQueueManager.taskQueue.take();
                 TaskQueueManager.taskStatusMap.put(task.getId(), TaskStatus.PROCESSING);
-                System.out.printf("[Worker: %s] Processing Task %s (Priority %d)%n",
+                System.out.printf("[Consumer: %s] Processing Task %s (Priority %d)%n",
                         Thread.currentThread().getName(), task.getId(), task.getPriority());
                 Thread.sleep(1000 + new Random().nextInt(3000));
                 if (new Random().nextBoolean()) {
