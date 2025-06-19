@@ -12,4 +12,5 @@ public class TaskQueueManager {
     public static PriorityBlockingQueue<Task> taskQueue = new PriorityBlockingQueue<Task>();
     public static ConcurrentHashMap<UUID, TaskStatus> taskStatusMap = new ConcurrentHashMap<java.util.UUID, TaskStatus>();
     public static AtomicInteger taskProcessedCounter = new AtomicInteger();
+    public static int primitiveTaskProcessedCounter;
 }
