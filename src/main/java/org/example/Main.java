@@ -1,17 +1,37 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import org.example.consumer.TaskConsumer;
+import org.example.monitor.GracefulShutdown;
+import org.example.monitor.TaskMonitor;
+import org.example.producer.TaskProducer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        try (ExecutorService consumerPool = Executors.newFixedThreadPool(5)) {
+            List<Thread> producers = new ArrayList<>();
+            for (int i = 0; i <=2; i++) {
+                producers.add(new Thread(new TaskProducer("Producer-"+(i+1))));
+            }
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+            producers.forEach(Thread::start);
+
+            for (int i = 0; i <5; i++) {
+                consumerPool.submit(new TaskConsumer());
+            }
+            Thread monitor = new Thread(new TaskMonitor(consumerPool));
+            monitor.start();
+
+            // Register shutdown hook
+            Runtime.getRuntime().addShutdownHook(new Thread(new GracefulShutdown(producers, consumerPool)));
+
+
+        }catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

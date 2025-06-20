@@ -1,5 +1,7 @@
 package org.example.deadlock;
 
+import org.example.utils.LoggerService;
+
 public class DeadlockResolved {
     private static final Object LOCK_A = new Object();
     private static final Object LOCK_B = new Object();
@@ -14,10 +16,10 @@ public class DeadlockResolved {
 
     private static void acquireLocks(String name, Object lock1, Object lock2) {
         synchronized (lock1) {
-            System.out.println(name + ": Holding lock1...");
+            LoggerService.displayLog(name + ": Holding lock1...");
             try { Thread.sleep(100); } catch (InterruptedException ignored) {}
             synchronized (lock2) {
-                System.out.println(name + ": Acquired both locks!");
+                LoggerService.displayLog(name + ": Acquired both locks!");
             }
         }
     }

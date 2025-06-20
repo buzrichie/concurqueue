@@ -2,6 +2,7 @@ package org.example.producer;
 
 import org.example.model.Task;
 import org.example.model.TaskStatus;
+import org.example.utils.LoggerService;
 import org.example.utils.TaskQueueManager;
 
 import java.time.Instant;
@@ -28,10 +29,11 @@ public class TaskProducer implements Runnable {
                 throw new RuntimeException(e);
             }
             TaskQueueManager.taskStatusMap.put(task.getId(), TaskStatus.SUBMITTED);
-            System.out.println("[Producer " + producerName + "] Submitted: " + task.getId());
+            LoggerService.displayLog("[Producer " + producerName + "] Submitted: " + task.getId());
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
+                LoggerService.displayLog("[Producer "+ producerName+ " Interrupted. Stopping producer thread." );
                 break;
             }
         }

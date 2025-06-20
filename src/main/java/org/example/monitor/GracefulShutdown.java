@@ -1,5 +1,7 @@
 package org.example.monitor;
 
+import org.example.utils.LoggerService;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +17,7 @@ public class GracefulShutdown implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Shutdown hook triggered...");
+        LoggerService.displayLog("-----------------Shutdown hook triggered...");
 
         // Step 1: Stop producers
         producers.forEach(Thread::interrupt); // Interrupt each producer thread
@@ -33,7 +35,7 @@ public class GracefulShutdown implements Runnable {
         workerPool.shutdown(); // No new tasks will be accepted
         try {
             if (!workerPool.awaitTermination(5, TimeUnit.SECONDS)) {
-                System.out.println("Forcing shutdown of worker pool...");
+                LoggerService.displayLog("---------------Forcing shutdown of worker pool...");
                 workerPool.shutdownNow(); // Cancel currently running tasks
             }
         } catch (InterruptedException e) {
@@ -41,6 +43,6 @@ public class GracefulShutdown implements Runnable {
             Thread.currentThread().interrupt();
         }
 
-        System.out.println("Shutdown complete.");
+        LoggerService.displayLog("-------------Shutdown complete.------------");
     }
 }
