@@ -25,12 +25,8 @@ public class TaskProducer implements Runnable {
                     .createdTimestamp(Instant.now()).payload("Payload").build();
             try {
                 TaskQueueManager.taskQueue.put(task);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            TaskQueueManager.taskStatusMap.put(task.getId(), TaskStatus.SUBMITTED);
-            LoggerService.displayLog("[Producer " + producerName + "] Submitted: " + task.getId());
-            try {
+                TaskQueueManager.taskStatusMap.put(task.getId(), TaskStatus.SUBMITTED);
+                LoggerService.displayLog("[Producer " + producerName + "] Submitted: " + task.getId());
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 LoggerService.displayLog("[Producer "+ producerName+ " Interrupted. Stopping producer thread." );
