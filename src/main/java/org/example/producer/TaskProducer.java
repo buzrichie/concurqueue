@@ -20,8 +20,13 @@ public class TaskProducer implements Runnable {
         Random random = new Random();
         while (!Thread.currentThread().isInterrupted()) {
             int priority = random.nextInt(10);
-            Task task = new Task(UUID.randomUUID(), producerName + "-Task", priority, Instant.now(), "Payload");
-            TaskQueueManager.taskQueue.put(task);
+            Task task = Task.builder().id(UUID.randomUUID()).name(producerName + "-Task").priority( priority)
+                    .createdTimestamp(Instant.now()).payload("Payload").build();
+            try {
+                TaskQueueManager.taskQueue.put(task);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             TaskQueueManager.taskStatusMap.put(task.getId(), TaskStatus.SUBMITTED);
             System.out.println("[Producer " + producerName + "] Submitted: " + task.getId());
             try {
