@@ -18,7 +18,7 @@ public class TaskProducerTest {
 
     @Test
     public void testProducerAddsTasksToQueue() {
-        Thread producerThread = new Thread(new TaskProducer("TEST-PRODUCER"));
+        Thread producerThread = new Thread(new TaskProducer("TEST-PRODUCER",7));
         producerThread.start();
 
         await().atMost(Duration.ofSeconds(5))

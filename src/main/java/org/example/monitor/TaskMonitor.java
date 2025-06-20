@@ -21,10 +21,18 @@ public class TaskMonitor implements Runnable {
         while (!Thread.currentThread().isInterrupted()) {
             try {
 
-                LoggerService.displayLog("[Monitor] Queue size: " + TaskQueueManager.taskQueue.size()
-                        + " Tasks processed: " + TaskQueueManager.taskProcessedCounter.get()+
-                        " Tasks processed Primitive " + TaskQueueManager.taskProcessedCounter+  " Active Pool(Consumers): " + ((ThreadPoolExecutor) poolExecutor).getActiveCount());
-                Thread.sleep(2000);
+                ThreadPoolExecutor executor = (ThreadPoolExecutor) poolExecutor;
+
+                LoggerService.displayLog("[Monitor] " +
+                        "Queue size: " + TaskQueueManager.taskQueue.size() +
+                        " | Remaining Capacity: " + TaskQueueManager.taskQueue.remainingCapacity() +
+                        " | Tasks processed: " + TaskQueueManager.taskProcessedCounter.get() +
+                        " | Raw Processed: " + TaskQueueManager.taskProcessedCounter +
+                        " | Active Pool (Consumers): " + executor.getActiveCount() +
+                        " | Idle Threads: " + (executor.getPoolSize() - executor.getActiveCount()) +
+                        " | Total Tasks Submitted: " + executor.getTaskCount()
+                );
+                Thread.sleep(5000);
 
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

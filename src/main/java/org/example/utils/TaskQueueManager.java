@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class TaskQueueManager {
 //    public static PriorityBlockingQueue<Task> taskQueue = new PriorityBlockingQueue<Task>();
-    public static final int MAX_CAPACITY = 10;
+    public static final int MAX_CAPACITY = 100;
     public static final LinkedBlockingQueue<Task> taskQueue = new LinkedBlockingQueue<>(MAX_CAPACITY);
 
     public static ConcurrentHashMap<UUID, TaskStatus> taskStatusMap = new ConcurrentHashMap<java.util.UUID, TaskStatus>();
