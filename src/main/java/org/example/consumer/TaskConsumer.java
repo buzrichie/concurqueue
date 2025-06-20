@@ -18,10 +18,20 @@ public class TaskConsumer implements Runnable {
                 Thread.sleep(1000 + new Random().nextInt(3000));
                 if (new Random().nextBoolean()) {
                     TaskQueueManager.taskStatusMap.put(task.getId(), TaskStatus.COMPLETED);
+                    TaskQueueManager.taskProcessedCounter.incrementAndGet();
+                    TaskQueueManager.primitiveTaskProcessedCounter ++;
                 } else {
-                    TaskQueueManager.taskStatusMap.put(task.getId(), TaskStatus.FAILED);
+                    task.incrementRetryCount();
+                    if (task.getRetryCount() < 3) {
+                        System.out.printf("[Worker: %s] RETRYING task %s (Attempt %d)\n", Thread.currentThread().getName(), task.getId(), task.getRetryCount() + 1);
+                        TaskQueueManager.taskStatusMap.put(task.getId(), TaskStatus.SUBMITTED);
+                        TaskQueueManager.taskQueue.put(task);
+                    } else {
+                        System.out.printf("[Worker: %s] Task %s FAILED after 3 retries\n",
+                                Thread.currentThread().getName(), task.getId());
+                        TaskQueueManager.taskStatusMap.put(task.getId(), TaskStatus.FAILED);
+                    }
                 }
-                TaskQueueManager.taskProcessedCounter.incrementAndGet();
             } catch (InterruptedException e) {
                 break;
             }
